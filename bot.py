@@ -1,5 +1,6 @@
 from chathandler import ChatInstance, ChatHandler
 from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
+import sys
 
 class Chat(ChatInstance):
 	def __init__(self, bot, chat_id=0):
