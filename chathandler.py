@@ -12,8 +12,7 @@ class ChatHandler:
 	def __init__(self, Chat_class, token, db_filename):
 		self.bot = telepot.Bot(token)
 		self.db = TinyDB(db_filename, storage=CachingMiddleware(JSONStorage))
-		self.db_table = self.db.table('chats')
-		self.chat = Chat_class(self.bot)
+		self.chat = Chat_class(self.bot, self.db, 0)
 		self.Chat_class = Chat_class
 	def start(self):
 		signal.signal(signal.SIGINT, self.sigint_handler)
@@ -35,7 +34,8 @@ class ChatHandler:
 		self.backup(doc_id, chat_id)
 	def load(self, chat_id):
 		q = Query()
-		item = self.db_table.get(q.chat_id == chat_id)
+		db_table = self.db.table('chats')
+		item = db_table.get(q.chat_id == chat_id)
 		if item is None:
 			self.chat = self.Chat_class(self.bot, chat_id)
 			return None
@@ -44,17 +44,19 @@ class ChatHandler:
 			return item.doc_id
 	def backup(self, doc_id, chat_id):
 		d = self.chat.__getstate__()
+		db_table = self.db.table('chats')
 		if doc_id is None:
-			self.db_table.insert(d)
+			db_table.insert(d)
 		else:
-			self.db_table.write_back(documents=[d], doc_ids=[doc_id])
+			db_table.write_back(documents=[d], doc_ids=[doc_id])
 	def sigint_handler(self, signum, frame):
 		self.db.close()
 		print('SIGINT caught, closing database...')
 		sys.exit(0)
 
 class ChatInstance:
-	def __init__(self, bot, chat_id=0):
+	def __init__(self, bot, db, chat_id):
+		self.db = db
 		self.bot = bot
 		self.chat_id = chat_id
 	def on_message_received(self, msg):
@@ -64,6 +66,6 @@ class ChatInstance:
 	def on_callback_received(self, msg):
 		raise NotImplementedError
 	def __getstate__(self):
-		return {k: v for k, v in self.__dict__.items() if k != 'bot'}
+		return {k: v for k, v in self.__dict__.items() if k != 'bot' and k != 'db'}
 	def __setstate__(self, state):
 		self.__dict__.update(state)
