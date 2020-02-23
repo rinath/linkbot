@@ -1,8 +1,10 @@
 from chathandler import ChatInstance, ChatHandler
 from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
+import telepot
 import sys
 import json
 import pprint
+import urllib3
 
 class Chat(ChatInstance):
 	def __init__(self, bot, chat_id=0):
