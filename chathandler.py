@@ -37,7 +37,7 @@ class ChatHandler:
 		db_table = self.db.table('chats')
 		item = db_table.get(q.chat_id == chat_id)
 		if item is None:
-			self.chat = self.Chat_class(self.bot, chat_id)
+			self.chat = self.Chat_class(self.bot, self.db, chat_id)
 			return None
 		else:
 			self.chat.__setstate__(dict(item))
