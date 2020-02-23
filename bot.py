@@ -21,5 +21,21 @@ class Chat(ChatInstance):
 	def on_callback_received(self, msg):
 		print('callback:' + msg['data'])
 
-mybot = ChatHandler(Chat, '1002235702:AAHNyEsp3KbkAvfXPygmNNmZ-4BVItaPtWs', 'db.json')
+token = ''
+token_file = 'token.txt'
+def exit():
+	print(f'Put telegram bot\'s token in file {token_file}')
+	sys.exit(0)
+
+try:
+	with open(token_file, 'r') as f:
+		token = f.read()
+		if len(token) < 2:
+			exit()
+except IOError:
+	with open(token_file, 'w') as f:
+		f.write('')
+	exit()
+
+mybot = ChatHandler(Chat, token, 'db.json')
 mybot.start()
