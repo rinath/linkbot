@@ -1,6 +1,8 @@
 from chathandler import ChatInstance, ChatHandler
 from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 import sys
+import json
+import pprint
 
 class Chat(ChatInstance):
 	def __init__(self, bot, chat_id=0):
@@ -22,21 +24,31 @@ class Chat(ChatInstance):
 	def on_callback_received(self, msg):
 		print('callback:' + msg['data'])
 
-token = ''
-token_file = 'token.txt'
+settings = {}
+settings_file = 'settings.json'
 def exit():
-	print('Put telegram bot\'s token in file %s', token_file)
+	print('Put telegram bot\'s token in file %s' % settings_file)
 	sys.exit(0)
 
 try:
-	with open(token_file, 'r') as f:
-		token = f.read()
-		if len(token) < 2:
+	with open(settings_file, 'r') as f:
+		s = f.read()
+		settings = json.loads(s)
+		if settings['token'] is None:
 			exit()
-except IOError:
-	with open(token_file, 'w') as f:
-		f.write('')
-	exit()
+except FileNotFoundError:
+	print('except')
+	with open(settings_file, 'w') as f:
+		settings = {'token': None, 'use_proxy': False}
+		json.dump(settings, f, indent=4)
+		exit()
 
-mybot = ChatHandler(Chat, token, 'db.json')
+if settings['use_proxy']:
+	proxy_url = "http://proxy.server:3128"
+	telepot.api._pools = {
+	    'default': urllib3.ProxyManager(proxy_url=proxy_url, num_pools=3, maxsize=10, retries=False, timeout=30),
+	}
+	telepot.api._onetime_pool_spec = (urllib3.ProxyManager, dict(proxy_url=proxy_url, num_pools=1, maxsize=1, retries=False, timeout=30))
+
+mybot = ChatHandler(Chat, settings['token'], 'db.json')
 mybot.start()
