@@ -7,7 +7,7 @@ class Chat(ChatInstance):
 		self.n = 0
 	def on_message_received(self, msg):
 		self.n += 1
-		self.bot.sendMessage(self.chat_id, f'n={self.n}')
+		self.bot.sendMessage(self.chat_id, 'n=%d'%self.n)
 	def on_command_received(self, command):
 		if command == '/start':
 			s = '''🏻 Привет, я чат-бот курса «Сам себе SMM» от Айжан Мазалиевой!
@@ -24,7 +24,7 @@ class Chat(ChatInstance):
 token = ''
 token_file = 'token.txt'
 def exit():
-	print(f'Put telegram bot\'s token in file {token_file}')
+	print('Put telegram bot\'s token in file %s', token_file)
 	sys.exit(0)
 
 try:
