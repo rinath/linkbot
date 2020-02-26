@@ -30,6 +30,8 @@ class Chat(ChatInstance):
 			q = Query()
 			codes = table.get(q.type == 'promocode')
 			self.bot.sendMessage(self.chat_id, codes['codes']['/start'])
+		else:
+			self.bot.sendMessage(self.chat_id, 'Неправильная команда. Напишите /start. Я всего лишь бот, и не понимаю, что мне надо сделать! Помнишь, я говорил, подбирать кодовое слово бесполезно?)')
 	def on_callback_received(self, msg):
 		print('callback:' + msg['data'])
 
