@@ -19,7 +19,7 @@ class Chat(ChatInstance):
 		if text not in codes['codes']:
 			self.bot.sendMessage(self.chat_id, 'Я всего лишь бот, и не понимаю, что мне надо сделать! Помнишь, я говорил, подбирать кодовое слово бесполезно?)')
 		else:
-			self.bot.sendMessage(self.chat_id, 'Новый урок: ' + codes['codes'][text])
+			self.bot.sendMessage(self.chat_id, codes['codes'][text])
 #		self.n += 1
 #		self.bot.sendMessage(self.chat_id, 'n=%d'%self.n)
 	def on_command_received(self, command):
