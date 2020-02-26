@@ -6,13 +6,14 @@ import json
 import pprint
 import urllib3
 from tinydb import Query
+from datetime import datetime
 
 class Chat(ChatInstance):
 	def __init__(self, bot, db, chat_id):
 		super().__init__(bot, db, chat_id)
 	def on_message_received(self, msg):
 		text = msg['text']
-		print('chat_id: ' + str(self.chat_id) + ', message: ' + text)
+		print(str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', message: ' + text)
 		table = self.db.table('promocodes')
 		q = Query()
 		codes = table.get(q.type == 'promocode')
@@ -23,7 +24,7 @@ class Chat(ChatInstance):
 #		self.n += 1
 #		self.bot.sendMessage(self.chat_id, 'n=%d'%self.n)
 	def on_command_received(self, command):
-		print('chat_id: ' + str(self.chat_id) + ', command: ' + command)
+		print(str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', command: ' + command)
 		if command == '/start':
 			table = self.db.table('promocodes')
 			q = Query()
