@@ -10,9 +10,9 @@ from tinydb import Query
 class Chat(ChatInstance):
 	def __init__(self, bot, db, chat_id):
 		super().__init__(bot, db, chat_id)
-		self.n = 0
 	def on_message_received(self, msg):
 		text = msg['text']
+		print('chat_id: ' + str(self.chat_id) + ', message: ' + text)
 		table = self.db.table('promocodes')
 		q = Query()
 		codes = table.get(q.type == 'promocode')
@@ -23,24 +23,12 @@ class Chat(ChatInstance):
 #		self.n += 1
 #		self.bot.sendMessage(self.chat_id, 'n=%d'%self.n)
 	def on_command_received(self, command):
+		print('chat_id: ' + str(self.chat_id) + ', command: ' + command)
 		if command == '/start':
-			s = '''Я вижу, ты настроен серьезно! Меня это очень радует)
-
-Но для начала, давай пройдемся по правилам прохождения курса:
-
-1. В этом сообщение тебе пришла ссылка на 1 урок.
-2. Как только ты выполнишь первое домашнее задание, и оно будет принято куратором, ты получишь кодовое слово, которое надо ввести сюда ( строка внизу)
-3. Если слово введено правильно, ты получишь ссылку на следующий урок и сможешь проходишь обучение дальше.
-4. Если слово введено неправильно, я не смогу отправить тебе урок. Подбирать слова бесполезно ( это сделано для того, чтобы ты получил максимальную пользу и обратную связь по урокам)
-
-Лови ссылку на 1 урок и начинай обучение прямо сейчас:
-
-https://youtu.be/UQxbZLkm7uU
-
-Ах да, совсем забыл тебя предупредить - видео-уроки идут в записи, поэтому некоторые временные обозначения могут отличаться.
-
-Удачи!'''
-			self.bot.sendMessage(self.chat_id, s)
+			table = self.db.table('promocodes')
+			q = Query()
+			codes = table.get(q.type == 'promocode')
+			self.bot.sendMessage(self.chat_id, codes['codes']['/start'])
 	def on_callback_received(self, msg):
 		print('callback:' + msg['data'])
 
