@@ -12,11 +12,13 @@ class Chat(ChatInstance):
 	def __init__(self, bot, db, chat_id):
 		super().__init__(bot, db, chat_id)
 		self.access_granted = False
+	def access_denied(self):
+		self.bot.sendMessage(self.chat_id, 'У вас нет доступа к этому боту. Чтобы заполучить доступ, обратитесь к Айжан Мазалиевой')
+		print('ACCESS DENIED, ' + str(datetime.now()) + ', chat_id: ' + str(self.chat_id))
 	def on_message_received(self, msg):
 		text = msg['text']
 		if not self.access_granted:
-			self.bot.sendMessage(self.chat_id, 'У вас нет доступа к этому боту. Чтобы заполучить доступ, обратитесь к Айжан Мазалиевой')
-			print('ACCESS DENIED, ' + str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', message: ' + text)
+			self.access_denied()
 			return
 		print(str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', message: ' + text)
 		table = self.db.table('promocodes')
@@ -33,6 +35,7 @@ class Chat(ChatInstance):
 			if command == '/start dQw4w9WgXcQ':
 				self.access_granted = True
 			else:
+				self.access_denied()
 				return
 		print(str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', command: ' + command)
 		if command.startswith('/start'):
