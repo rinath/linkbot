@@ -11,8 +11,13 @@ from datetime import datetime
 class Chat(ChatInstance):
 	def __init__(self, bot, db, chat_id):
 		super().__init__(bot, db, chat_id)
+		self.access_granted = False
 	def on_message_received(self, msg):
 		text = msg['text']
+		if not self.access_granted:
+			self.bot.sendMessage(self.chat_id, 'У вас нет доступа к этому боту. Чтобы заполучить доступ, обратитесь к Айжан Мазалиевой')
+			print('ACCESS DENIED, ' + str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', message: ' + text)
+			return
 		print(str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', message: ' + text)
 		table = self.db.table('promocodes')
 		q = Query()
@@ -24,6 +29,11 @@ class Chat(ChatInstance):
 #		self.n += 1
 #		self.bot.sendMessage(self.chat_id, 'n=%d'%self.n)
 	def on_command_received(self, command):
+		if not self.access_granted:
+			if command == '/start dQw4w9WgXcQ':
+				self.access_granted = True
+			else:
+				return
 		print(str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', command: ' + command)
 		if command == '/start':
 			table = self.db.table('promocodes')
