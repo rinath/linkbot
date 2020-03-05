@@ -35,7 +35,7 @@ class Chat(ChatInstance):
 			else:
 				return
 		print(str(datetime.now()) + ', chat_id: ' + str(self.chat_id) + ', command: ' + command)
-		if command == '/start':
+		if command.startswith('/start'):
 			table = self.db.table('promocodes')
 			q = Query()
 			codes = table.get(q.type == 'promocode')
